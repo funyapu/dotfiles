@@ -21,7 +21,7 @@ if dein#load_state(s:dein_dir)
   let g:rc_dir  = expand('~/.vim/rc')
 
   call dein#add('Shougo/dein.vim')
-  call dein#add('Shougo/vimproc.vim', {'build': 'make'})
+  call dein#add('Shougo/vimproc', {'build': 'make'})
 
   call dein#add('LeafCage/foldCC.vim')
 
@@ -75,6 +75,7 @@ autocmd Filetype javascript setlocal ts=2 sw=2 expandtab
 autocmd Filetype stylus setlocal ts=2 sw=2 expandtab
 autocmd Filetype php setlocal ts=4 sw=4 expandtab
 
+let g:vimproc_dll_path = '$HOME/.cache/dein/repos/github.com/Shougo/vimproc/lib/vimproc_mac.so'
 " JS Lint
 command! EsFix :call vimproc#system_bg("eslint --fix " . expand("%"))
 augroup javascript
@@ -99,7 +100,6 @@ set title
 set cursorline
 set backspace=indent,eol,start
 "set clipboard=unnamed,autoselect
-set spelllang+=cjk
 set smartcase
 set expandtab
 set tabstop=2
@@ -107,10 +107,15 @@ set softtabstop=2
 set shiftwidth=2
 set nomore
 set foldtext=FoldCCtext()
+set nrformats=alpha
+set modifiable
+command T terminal
 
 let mapleader = "\<Space>"
 
 let g:vue_disable_pre_processors=1
+
+set spelllang=en,cjk
 
 fun! s:SpellConf()
   redir! => syntax
@@ -129,6 +134,11 @@ fun! s:SpellConf()
 
   syntax cluster Spell add=SpellNotAscii,SpellMaybeCode
 endfunc
+
+augroup spell_check
+  autocmd!
+  autocmd BufReadPost,BufNewFile,Syntax * call s:SpellConf()
+augroup END
 
 augroup spell_check
   autocmd!
@@ -163,7 +173,7 @@ highlight CursorColumn guibg=black
 highlight SpellBad cterm=undercurl,bold
 highlight SpellBad gui=undercurl,bold
 
-
+set colorcolumn=80
 
 "===============================
 " key-remap
@@ -250,9 +260,14 @@ let g:ale_linter_aliases = {'vue': 'css'}
 let g:ale_sign_error = 'X('
 let g:ale_sign_warning = ':('
 let g:ale_sign_column_always = 1
-let g:ale_javascript_eslint_options = "--no-eslintrc --config .eslintrc.json"
+let g:ale_javascript_eslint_options = "--no-eslintrc --config .eslintrc.js"
+let g:ale_python_flake8_executable = 'python3'   " or 'python' for Python 2
+let g:ale_python_flake8_options = '-m flake8'
+"let g:ale_python_flake8_auto_pipenv = 1
+
 let g:ale_fixers = {
 \   'javascript': ['eslint'],
+\   'python': ['autopep8', 'yapf', 'isort'],
 \}
 
 let g:ale_fix_on_save = 1

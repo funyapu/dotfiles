@@ -21,7 +21,6 @@ setopt share_history
 alias ls="ls -G"
 alias ll="ls -lG"
 alias la="ls -laG"
-#alias rm='rmtrash'
 alias vi='vim'
 
 case $OSTYPE in
@@ -44,3 +43,13 @@ source $HOME/google-cloud-sdk/path.zsh.inc
 
 # The next line enables bash completion for gcloud.
 source $HOME/google-cloud-sdk/completion.zsh.inc
+
+export GREP_OPTIONS='--color=always'
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+fe() {
+  local files
+  IFS=$'\n' files=($(fzf-tmux --query="$1" --multi --select-1 --exit-0))
+  [[ -n "$files" ]] && ${EDITOR:-vim} "${files[@]}"
+}

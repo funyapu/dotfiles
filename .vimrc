@@ -76,12 +76,6 @@ autocmd Filetype stylus setlocal ts=2 sw=2 expandtab
 autocmd Filetype php setlocal ts=4 sw=4 expandtab
 
 let g:vimproc_dll_path = '$HOME/.cache/dein/repos/github.com/Shougo/vimproc/lib/vimproc_mac.so'
-" JS Lint
-command! EsFix :call vimproc#system_bg("eslint --fix " . expand("%"))
-augroup javascript
-  autocmd!
-  autocmd BufWrite *.js,*.jsx EsFix
-augroup END
 
 syntax on
 
@@ -109,7 +103,9 @@ set nomore
 set foldtext=FoldCCtext()
 set nrformats=alpha
 set modifiable
-command T terminal
+command T vert rightb term
+"set splitbelow
+"set termwinsize=7x0
 
 let mapleader = "\<Space>"
 
@@ -140,16 +136,11 @@ augroup spell_check
   autocmd BufReadPost,BufNewFile,Syntax * call s:SpellConf()
 augroup END
 
-augroup spell_check
-  autocmd!
-  autocmd BufReadPost,BufNewFile,Syntax * call s:SpellConf()
-augroup END
-
 "====================================
 " color settings
 "====================================
 colorscheme badwolf
-let g:badwolf_css_props_highlight = 1
+let g:badwolf_css_props_highlight = 0
 
 augroup HighlightTrailingSpaces
   autocmd!
@@ -238,9 +229,10 @@ function! s:toggle_indent()
 endfunction
 nnoremap <silent> <Space>ot :<C-u>call <SID>toggle_indent()<CR>
 
-let g:lightline = {
-      \ 'colorscheme': 'wombat',
-      \ }
+"let g:lightline = {
+"      \ 'colorscheme': 'wombat',
+"      \ }
+"
 set laststatus=2
 
 let g:ale_linters = {
@@ -254,20 +246,25 @@ let g:ale_linters = {
 \   'python': ['pylint'],
 \   'ts': ['tslint'],
 \   'slim': ['slim-lint'],
-\   'vue': ['eslint']
+\   'vue': ['eslint'],
 \}
-let g:ale_linter_aliases = {'vue': 'css'}
-let g:ale_sign_error = 'X('
-let g:ale_sign_warning = ':('
-let g:ale_sign_column_always = 1
-let g:ale_javascript_eslint_options = "--no-eslintrc --config .eslintrc.js"
-let g:ale_python_flake8_executable = 'python3'   " or 'python' for Python 2
-let g:ale_python_flake8_options = '-m flake8'
-"let g:ale_python_flake8_auto_pipenv = 1
 
+let g:ale_linter_aliases = {'vue': 'css'}
 let g:ale_fixers = {
 \   'javascript': ['eslint'],
-\   'python': ['autopep8', 'yapf', 'isort'],
+\   'vue': ['eslint'],
 \}
 
 let g:ale_fix_on_save = 1
+let g:ale_sign_error = 'X('
+let g:ale_sign_warning = ':('
+let g:ale_linters_explicit = 1
+let g:ale_set_signs = 1
+let g:ale_set_highlights = 1
+let b:ale_linter_aliases = ['javascript', 'vue']
+
+" Indent guide
+let g:indent_guides_enable_on_vim_startup = 1
+let g:indent_guides_auto_colors = 0
+autocmd VimEnter,Colorscheme * hi IndentGuidesOdd  guibg=black  ctermbg=black
+autocmd VimEnter,Colorscheme * hi IndentGuidesEven guibg=gray66 ctermbg=237
